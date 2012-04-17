@@ -1,0 +1,7 @@
+
+/DatabaseMigrator/bin
+/DatabaseMigrator/obj
+/DatabaseMigrator.Test/bin
+/DatabaseMigrator.Test/obj
+/TestResults
+*.suo

@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseMigrator", "DatabaseMigrator\DatabaseMigrator.csproj", "{C47B5BA8-DF1C-4938-974C-BEE52CC52941}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseMigrator.Test", "DatabaseMigrator.Test\DatabaseMigrator.Test.csproj", "{2271A4C8-65D6-4A6E-843B-084B5944A667}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CBBCC38F-1130-4A76-97DD-1FA1069014D6}"
+	ProjectSection(SolutionItems) = preProject
+		DatabaseMigrator.vsmdi = DatabaseMigrator.vsmdi
+		Local.testsettings = Local.testsettings
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C94F3B3F-CA53-4BE7-BC72-39446DD69023}"
+EndProject
+Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = DatabaseMigrator.vsmdi
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C47B5BA8-DF1C-4938-974C-BEE52CC52941}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C47B5BA8-DF1C-4938-974C-BEE52CC52941}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C47B5BA8-DF1C-4938-974C-BEE52CC52941}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C47B5BA8-DF1C-4938-974C-BEE52CC52941}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2271A4C8-65D6-4A6E-843B-084B5944A667}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2271A4C8-65D6-4A6E-843B-084B5944A667}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2271A4C8-65D6-4A6E-843B-084B5944A667}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2271A4C8-65D6-4A6E-843B-084B5944A667}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2271A4C8-65D6-4A6E-843B-084B5944A667} = {C94F3B3F-CA53-4BE7-BC72-39446DD69023}
+	EndGlobalSection
+EndGlobal

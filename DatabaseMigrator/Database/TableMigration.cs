@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Data.Common;
+using System;
 
 namespace DatabaseMigrator.Database
 {
@@ -27,6 +28,7 @@ namespace DatabaseMigrator.Database
             {
                 DeleteTable(dataRow["TABLE_NAME"].ToString());
                 CreateTable(dataRow["TABLE_NAME"].ToString());
+                InsertRows(dataRow["TABLE_NAME"].ToString());
             }
         }
 
@@ -81,19 +83,40 @@ namespace DatabaseMigrator.Database
 
         private void InsertRows(string tableName)
         {
+            try
+            {
+                DbCommand dbCommandSource = DBConnectionSource.ProviderFactory.CreateCommand();
+                dbCommandSource.CommandText = "SELECT * FROM " + tableName;
+                dbCommandSource.CommandType = CommandType.Text;
+                dbCommandSource.Connection = DBConnectionSource.Connection;
 
-            DbCommand dbCommand = DBConnectionSource.ProviderFactory.CreateCommand();
-            dbCommand.CommandText = "SELECT * FROM " + tableName;
-            dbCommand.CommandType = CommandType.Text;
+                DbDataAdapter dbDataAdapterSource = DBConnectionSource.ProviderFactory.CreateDataAdapter();
+                dbDataAdapterSource.SelectCommand = dbCommandSource;
 
-            DbDataAdapter dbDataAdapter = DBConnectionSource.ProviderFactory.CreateDataAdapter();
-            dbDataAdapter.SelectCommand = dbCommand;
+                DataSet dataSet = new DataSet();
+                dbDataAdapterSource.Fill(dataSet);
 
-            DataSet dataSet = new DataSet();
-            dbDataAdapter.Fill(dataSet);
+                foreach (DataRow dataRow in dataSet.Tables[0].Rows)
+                    dataRow.SetAdded();
 
-            DbDataAdapter dbDataAdapterT = DBConnectionTarget.ProviderFactory.CreateDataAdapter();
-            dbDataAdapterT.Update(dataSet);
+                DbCommand dbCommandTarget = DBConnectionTarget.ProviderFactory.CreateCommand();
+                dbCommandTarget.CommandText = "SELECT * FROM " + tableName;
+                dbCommandTarget.CommandType = CommandType.Text;
+                dbCommandTarget.Connection = DBConnectionTarget.Connection;
+
+                DbDataAdapter dbDataAdapterTarget = DBConnectionTarget.ProviderFactory.CreateDataAdapter();
+                dbDataAdapterTarget.SelectCommand = dbCommandTarget;
+
+                DbCommandBuilder dbCommandBuilder = DBConnectionTarget.ProviderFactory.CreateCommandBuilder();
+                dbCommandBuilder.DataAdapter = dbDataAdapterTarget;
+
+                dbDataAdapterTarget.InsertCommand = dbCommandBuilder.GetInsertCommand();
+                dbDataAdapterTarget.Update(dataSet);
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
     }
 }

@@ -24,7 +24,6 @@ namespace DatabaseMigrator.Test.Database
             tableMigration.DBConnectionTarget = dbConnectionTarget;
 
             tableMigration.Execute();
-
         }
     }
 }

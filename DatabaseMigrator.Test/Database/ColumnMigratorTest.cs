@@ -15,7 +15,7 @@ namespace DatabaseMigrator.Test.Database
             DBConnection dbConnectionSource = new DBConnection();
             dbConnectionSource.Initialize(dbConfigSource);
 
-            ColumnMigrator columnMigrator = new ColumnMigrator();
+            ColumnMigrator columnMigrator = new ColumnMigrator(new ConvertName());
             Assert.AreEqual(columnMigrator.GetSQLCreateColumnsInTable(dbConnectionSource.Connection, "TABLE1_TEST"), "(COLUMN1_VARCHAR  VARCHAR(100) ,COLUMN2_VARCHAR  VARCHAR(255) NOT NULL,COLUMN3_DATE TIMESTAMP ,COLUMN4_BIT  VARCHAR(1) ,COLUMN5_INTEGER INTEGER ,COLUMN6_DECIMAL NUMERIC )");
         }
     }

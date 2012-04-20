@@ -1,6 +1,6 @@
 ﻿using System.Data;
 using System.Data.Common;
-using System;
+using DatabaseMigrator.Logger;
 
 namespace DatabaseMigrator.Database
 {
@@ -9,10 +9,15 @@ namespace DatabaseMigrator.Database
         public IDBConnetion DBConnectionSource { get; set; }
         public IDBConnetion DBConnectionTarget { get; set; }
 
+        private IConvertName convertName;
         private IColumnMigrator columnMigrator;
-        public TableMigration(IColumnMigrator columnMigrator)
+        private ILogger logger;
+
+        public TableMigration(IConvertName convertName, IColumnMigrator columnMigrator, ILogger logger)
         {
+            this.convertName = convertName;
             this.columnMigrator = columnMigrator;
+            this.logger = logger;
         }
 
         public void Execute()
@@ -26,9 +31,12 @@ namespace DatabaseMigrator.Database
             
             foreach (DataRow dataRow in dataTable.Rows)
             {
-                DeleteTable(dataRow["TABLE_NAME"].ToString());
-                CreateTable(dataRow["TABLE_NAME"].ToString());
-                InsertRows(dataRow["TABLE_NAME"].ToString());
+                string tableName = dataRow["TABLE_NAME"].ToString();
+                string tableNameConvert = convertName.Table(tableName);
+
+                DeleteTable(tableNameConvert);
+                CreateTable(tableName, tableNameConvert);
+                InsertRows(tableName, tableNameConvert);
             }
         }
 
@@ -56,67 +64,76 @@ namespace DatabaseMigrator.Database
                 DbCommand dbCommand = DBConnectionTarget.Connection.CreateCommand();
                 dbCommand.CommandText = string.Format("DROP TABLE {0}", tableName);
                 dbCommand.CommandType = CommandType.Text;
-
                 dbCommand.ExecuteNonQuery();
             }
             catch
             {
-
+                this.logger.Error(string.Format("Was not possible to delete table {0}.", tableName));
             }
         }
 
-        private void CreateTable(string tableName)
+        private void CreateTable(string tableName, string tableNameConvert)
         {
             try
             {
                 DbCommand dbCommand = DBConnectionTarget.Connection.CreateCommand();
-                dbCommand.CommandText = string.Format("CREATE TABLE {0} {1}", tableName, columnMigrator.GetSQLCreateColumnsInTable(DBConnectionSource.Connection,tableName));
+                dbCommand.CommandText = string.Format("CREATE TABLE {0} {1}", tableNameConvert, columnMigrator.GetSQLCreateColumnsInTable(DBConnectionSource.Connection, tableName));
                 dbCommand.CommandType = CommandType.Text;
-
                 dbCommand.ExecuteNonQuery();
             }
             catch
             {
-
+                this.logger.Error(string.Format("Was not possible to create table {0}.", tableName));
             }
         }
 
-        private void InsertRows(string tableName)
+        private void InsertRows(string tableName, string tableNameConvert)
         {
             try
             {
-                DbCommand dbCommandSource = DBConnectionSource.ProviderFactory.CreateCommand();
-                dbCommandSource.CommandText = "SELECT * FROM " + tableName;
-                dbCommandSource.CommandType = CommandType.Text;
-                dbCommandSource.Connection = DBConnectionSource.Connection;
-
-                DbDataAdapter dbDataAdapterSource = DBConnectionSource.ProviderFactory.CreateDataAdapter();
-                dbDataAdapterSource.SelectCommand = dbCommandSource;
-
-                DataSet dataSet = new DataSet();
-                dbDataAdapterSource.Fill(dataSet);
-
-                foreach (DataRow dataRow in dataSet.Tables[0].Rows)
-                    dataRow.SetAdded();
-
-                DbCommand dbCommandTarget = DBConnectionTarget.ProviderFactory.CreateCommand();
-                dbCommandTarget.CommandText = "SELECT * FROM " + tableName;
-                dbCommandTarget.CommandType = CommandType.Text;
-                dbCommandTarget.Connection = DBConnectionTarget.Connection;
-
-                DbDataAdapter dbDataAdapterTarget = DBConnectionTarget.ProviderFactory.CreateDataAdapter();
-                dbDataAdapterTarget.SelectCommand = dbCommandTarget;
-
-                DbCommandBuilder dbCommandBuilder = DBConnectionTarget.ProviderFactory.CreateCommandBuilder();
-                dbCommandBuilder.DataAdapter = dbDataAdapterTarget;
-
-                dbDataAdapterTarget.InsertCommand = dbCommandBuilder.GetInsertCommand();
-                dbDataAdapterTarget.Update(dataSet);
+                PutRowsTargetDatabase(tableNameConvert,GetRowsSouceDatabase(tableName));
             }
-            catch (Exception ex)
+            catch 
             {
-
+                this.logger.Error(string.Format("Was not possible to insert rows in table {0}.", tableName));
             }
+        }
+
+        private DataSet GetRowsSouceDatabase(string tableName)
+        {
+            DbCommand dbCommand = DBConnectionSource.Connection.CreateCommand();
+            dbCommand.CommandText = string.Format("SELECT * FROM {0}" , tableName);
+            dbCommand.CommandType = CommandType.Text;
+
+            DbDataAdapter dbDataAdapter = DBConnectionSource.ProviderFactory.CreateDataAdapter();
+            dbDataAdapter.SelectCommand = dbCommand;
+
+            DataSet dataSet = new DataSet();
+            dbDataAdapter.Fill(dataSet);
+
+            return dataSet;
+        }
+
+        private void PutRowsTargetDatabase(string tableNameConvert, DataSet dataSet)
+        {
+            foreach (DataColumn dataColumn in dataSet.Tables[0].Columns)
+                dataColumn.ColumnName = convertName.Column(tableNameConvert, dataColumn.ColumnName);
+
+            foreach (DataRow dataRow in dataSet.Tables[0].Rows)
+                dataRow.SetAdded();
+
+            DbCommand dbCommand = DBConnectionTarget.Connection.CreateCommand();
+            dbCommand.CommandText = string.Format("SELECT * FROM {0}", tableNameConvert);
+            dbCommand.CommandType = CommandType.Text;
+
+            DbDataAdapter dbDataAdapter = DBConnectionTarget.ProviderFactory.CreateDataAdapter();
+            dbDataAdapter.SelectCommand = dbCommand;
+
+            DbCommandBuilder dbCommandBuilder = DBConnectionTarget.ProviderFactory.CreateCommandBuilder();
+            dbCommandBuilder.DataAdapter = dbDataAdapter;
+
+            dbDataAdapter.InsertCommand = dbCommandBuilder.GetInsertCommand();
+            dbDataAdapter.Update(dataSet);
         }
     }
 }

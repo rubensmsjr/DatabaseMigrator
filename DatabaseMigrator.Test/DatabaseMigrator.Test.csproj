@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config\CreateConfigTest.cs" />
+    <Compile Include="ConvertNameTest.cs" />
     <Compile Include="Database\ColumnMigratorTest.cs" />
     <Compile Include="Database\DBConnectionTest.cs" />
     <Compile Include="Database\DBMigrationTest.cs" />

@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DatabaseMigrator.Database;
 using DatabaseMigrator.Config;
+using DatabaseMigrator.Logger;
 
 namespace DatabaseMigrator.Test.Database
 {
@@ -11,7 +12,7 @@ namespace DatabaseMigrator.Test.Database
         [TestMethod]
         public void TestInitializeConnection()
         {
-            TableMigration tableMigration = new TableMigration(new ColumnMigrator());
+            TableMigration tableMigration = new TableMigration(new ConvertName(), new ColumnMigrator(new ConvertName()), new Log4NetLogger());
             DBMigration dbMigration = new DBMigration(tableMigration);
 
             DBConfig dbConfigSource = new DBConfig("System.Data.OleDb", String.Format(@"Provider=Microsoft.JET.OLEDB.4.0;data source={0}\DatabaseSource.mdb", AppDomain.CurrentDomain.BaseDirectory));

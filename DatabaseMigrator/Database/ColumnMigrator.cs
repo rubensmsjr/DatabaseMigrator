@@ -6,6 +6,13 @@ namespace DatabaseMigrator.Database
 {
     public class ColumnMigrator:IColumnMigrator
     {
+        private IConvertName convertName;
+
+        public ColumnMigrator(IConvertName convertName)
+        {
+            this.convertName = convertName;
+        }
+
         public string GetSQLCreateColumnsInTable(DbConnection dbConnection, string tableName)
         {
             string sqlColumns = "";
@@ -14,7 +21,7 @@ namespace DatabaseMigrator.Database
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
-                sqlColumns += GetSQLColumn(dataRow);
+                sqlColumns += GetSQLColumn(dataRow, tableName);
             }
 
             sqlColumns = sqlColumns.Remove(sqlColumns.Length - 1);
@@ -22,9 +29,9 @@ namespace DatabaseMigrator.Database
             return string.Format("({0})", sqlColumns);
         }
 
-        private string GetSQLColumn(DataRow dataRow)
+        private string GetSQLColumn(DataRow dataRow, string tableName)
         {
-            return string.Format("{0} {1} {2},", dataRow["COLUMN_NAME"], GetColumnType(dataRow), GetNullable(dataRow));
+            return string.Format("{0} {1} {2},", convertName.Column(tableName, dataRow["COLUMN_NAME"].ToString()), GetColumnType(dataRow), GetNullable(dataRow));
         }
 
         private string GetNullable(DataRow dataRow)

@@ -23,7 +23,6 @@ namespace DatabaseMigrator.Logger
             catch
             {
                 configIsTrue = false;
-                throw;
             }
 
         }

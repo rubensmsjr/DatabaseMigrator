@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("DatabaseMigrator.Test")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Imagem")]
+[assembly: AssemblyCompany("RJR Software Ltda")]
 [assembly: AssemblyProduct("DatabaseMigrator.Test")]
-[assembly: AssemblyCopyright("Copyright © Imagem 2012")]
+[assembly: AssemblyCopyright("Copyright © RJR Software Ltda")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

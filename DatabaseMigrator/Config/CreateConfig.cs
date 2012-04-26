@@ -7,6 +7,7 @@ using System.Reflection;
 using Mvp.Xml.XInclude;
 using DatabaseMigrator.XMLConfigurator;
 using DatabaseMigrator.Logger;
+using DatabaseMigrator.Resources;
 
 namespace DatabaseMigrator.Config
 {
@@ -22,7 +23,7 @@ namespace DatabaseMigrator.Config
             Configuration configuration = GetSettings<Configuration>(fileDBConfig);
 
             XMLConfigurator.Database database = configuration.ListDatabase.Find(delegate(XMLConfigurator.Database db) { return db.Type.Equals(type, StringComparison.InvariantCultureIgnoreCase); });
-            if (database == null) { throw new ArgumentException("The type of database should be source or target."); }
+            if (database == null) { throw new ArgumentException(ResourceManager.GetMessage("TypeSourceOrTarget")); }
 
             return BuildSettings<DBConfig>(database.ListParameters);
         }
@@ -37,7 +38,7 @@ namespace DatabaseMigrator.Config
 
                 if (!serializer.CanDeserialize(xiReader))
                 {
-                    throw new InvalidOperationException("XML file can not be read.");
+                    throw new InvalidOperationException(ResourceManager.GetMessage("XMLNotRead"));
                 }
 
                 T config = (T)serializer.Deserialize(xiReader);
@@ -47,7 +48,7 @@ namespace DatabaseMigrator.Config
             }
             catch
             {
-                throw new FileNotFoundException("XML file not found.");
+                throw new FileNotFoundException(ResourceManager.GetMessage("XMLNotFound"));
             }
         }
 
@@ -69,7 +70,7 @@ namespace DatabaseMigrator.Config
             }
             catch
             {
-                throw new MissingFieldException("Parameters of the database not found.");
+                throw new MissingFieldException(ResourceManager.GetMessage("ParamNotFound"));
             }
         }
     }

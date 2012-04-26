@@ -66,9 +66,14 @@
     <Compile Include="Migrator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Config\DBConfig.cs" />
+    <Compile Include="Resources\ResourceManager.cs" />
     <Compile Include="XMLConfigurator\Configuration.cs" />
     <Compile Include="XMLConfigurator\Database.cs" />
     <Compile Include="XMLConfigurator\Parameter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Resource.en-US.resx" />
+    <EmbeddedResource Include="Resources\Resource.pt-BR.resx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

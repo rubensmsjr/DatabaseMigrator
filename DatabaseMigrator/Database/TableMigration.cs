@@ -1,6 +1,8 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Data.Common;
 using DatabaseMigrator.Logger;
+using DatabaseMigrator.Resources;
 
 namespace DatabaseMigrator.Database
 {
@@ -24,7 +26,7 @@ namespace DatabaseMigrator.Database
         {
             if (!ConnectionsIsInitialized())
             {
-                throw new DataException("Connections are not initialized.");
+                throw new DataException(ResourceManager.GetMessage("ConnectNotInitialized"));
             }
 
             DataTable dataTable = (DBConnectionSource.Connection).GetSchema("TABLES",new string[]{null,null,null,"TABLE"} );
@@ -34,9 +36,13 @@ namespace DatabaseMigrator.Database
                 string tableName = dataRow["TABLE_NAME"].ToString();
                 string tableNameConvert = convertName.Table(tableName);
 
+                logger.Info(string.Format(ResourceManager.GetMessage("MigratingTable"), tableName));
+
                 DeleteTable(tableNameConvert);
                 CreateTable(tableName, tableNameConvert);
                 InsertRows(tableName, tableNameConvert);
+
+                logger.Info(ResourceManager.GetMessage("MigrationCompleted"));
             }
         }
 
@@ -66,9 +72,9 @@ namespace DatabaseMigrator.Database
                 dbCommand.CommandType = CommandType.Text;
                 dbCommand.ExecuteNonQuery();
             }
-            catch
+            catch(Exception ex)
             {
-                this.logger.Error(string.Format("Was not possible to delete table {0}.", tableName));
+                this.logger.Error(string.Format(ResourceManager.GetMessage("LogDeleteTable") + " | {1}", tableName, ex.Message));
             }
         }
 
@@ -81,9 +87,9 @@ namespace DatabaseMigrator.Database
                 dbCommand.CommandType = CommandType.Text;
                 dbCommand.ExecuteNonQuery();
             }
-            catch
+            catch(Exception ex)
             {
-                this.logger.Error(string.Format("Was not possible to create table {0}.", tableName));
+                this.logger.Error(string.Format(ResourceManager.GetMessage("LogCreateTable")+ " | {1}", tableName, ex.Message));
             }
         }
 
@@ -93,9 +99,9 @@ namespace DatabaseMigrator.Database
             {
                 PutRowsTargetDatabase(tableNameConvert,GetRowsSouceDatabase(tableName));
             }
-            catch 
+            catch (Exception ex)
             {
-                this.logger.Error(string.Format("Was not possible to insert rows in table {0}.", tableName));
+                this.logger.Error(string.Format(ResourceManager.GetMessage("LogInsertRows")+ " | {1}", tableName, ex.Message));
             }
         }
 

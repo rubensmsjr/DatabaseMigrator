@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Data.Common;
 using DatabaseMigrator.Config;
+using DatabaseMigrator.Resources;
 
 namespace DatabaseMigrator.Database
 {
@@ -27,7 +28,7 @@ namespace DatabaseMigrator.Database
             }
             catch
             {
-                throw new DataException("Failed to open database.");
+                throw new DataException(ResourceManager.GetMessage("FailedOpenDatabase"));
             }
 
             IsInitialized = true;

@@ -32,29 +32,29 @@ namespace DatabaseMigrator
             return tableName;
         }
 
-        public string Column(string nameTable, string nameColumn)
+        public string Column(string nameTable, string columnName)
         {
-            if (nameColumn.Length > 30)
+            if (columnName.Length > 30)
             {
                 auxCountName = 0;
 
-                string name = ChangeExistingColumnName(nameTable, nameColumn.Substring(0, 30));
+                string name = ChangeExistingColumnName(nameTable, columnName.Substring(0, 30));
                 listNameColumn.Add(new Column(nameTable, name));
 
                 return name;
             }
-            return nameColumn;
+            return columnName;
         }
 
-        private string ChangeExistingColumnName(string tableName, string nameColumn)
+        private string ChangeExistingColumnName(string tableName, string columnName)
         {
-            if (listNameColumn.Contains(new Column(tableName, nameColumn)))
+            if (listNameColumn.Contains(new Column(tableName, columnName)))
             {
                 auxCountName++;
-                nameColumn = ChangeExistingColumnName(tableName, string.Format("{0}_{1}", nameColumn.Substring(0, 29 - auxCountName.ToString().Length), auxCountName));
+                columnName = ChangeExistingColumnName(tableName, string.Format("{0}_{1}", columnName.Substring(0, 29 - auxCountName.ToString().Length), auxCountName));
             }
 
-            return nameColumn;
+            return columnName;
         }
     }
 

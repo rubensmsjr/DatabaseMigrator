@@ -3,6 +3,6 @@
     public interface IConvertName
     {
         string Table(string tableName);
-        string Column(string tableName, string nameColumn);
+        string Column(string tableName, string columnName);
     }
 }

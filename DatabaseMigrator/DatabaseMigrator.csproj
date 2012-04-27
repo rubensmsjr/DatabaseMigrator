@@ -58,7 +58,9 @@
     <Compile Include="Database\IDBMigration.cs" />
     <Compile Include="Database\IDBConnetion.cs" />
     <Compile Include="Database\ITableMigration.cs" />
+    <Compile Include="Database\IViewMigration.cs" />
     <Compile Include="Database\TableMigration.cs" />
+    <Compile Include="Database\ViewMigration.cs" />
     <Compile Include="IConvertName.cs" />
     <Compile Include="IMigrator.cs" />
     <Compile Include="Logger\ILogger.cs" />

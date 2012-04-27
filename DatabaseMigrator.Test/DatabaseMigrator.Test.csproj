@@ -64,6 +64,7 @@
     <Compile Include="Database\DBConnectionTest.cs" />
     <Compile Include="Database\DBMigrationTest.cs" />
     <Compile Include="Database\TableMigrationTest.cs" />
+    <Compile Include="Database\ViewMigrationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\ResourceManagerTest.cs" />
   </ItemGroup>

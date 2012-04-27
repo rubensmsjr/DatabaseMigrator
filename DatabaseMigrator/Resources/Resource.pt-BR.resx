@@ -129,11 +129,17 @@
   <data name="LogDeleteTable" xml:space="preserve">
     <value>Não foi possivel excluir tabela {0}.</value>
   </data>
+  <data name="LogDeleteView" xml:space="preserve">
+    <value>Não foi possivel excluir view {0}.</value>
+  </data>
   <data name="LogInsertRows" xml:space="preserve">
     <value>Não foi possivel inserir dados na tabela {0}.</value>
   </data>
   <data name="MigratingTable" xml:space="preserve">
     <value>Migrando tabela de {0}.</value>
+  </data>
+  <data name="MigratingView" xml:space="preserve">
+    <value>Migrando view de {0}.</value>
   </data>
   <data name="MigrationCompleted" xml:space="preserve">
     <value>Migração foi concluída.</value>

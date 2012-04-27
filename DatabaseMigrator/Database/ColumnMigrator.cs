@@ -142,5 +142,10 @@ namespace DatabaseMigrator.Database
             }
             return 0;
         }
+
+        public string GetSQLSelectColumnsInView(string viewSelect)
+        {
+            return viewSelect;
+        }
     }
 }

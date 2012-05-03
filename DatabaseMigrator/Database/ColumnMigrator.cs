@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Data.Common;
 using System;
+using System.Collections.Generic;
 
 namespace DatabaseMigrator.Database
 {
@@ -16,12 +17,14 @@ namespace DatabaseMigrator.Database
         public string GetSQLCreateColumnsInTable(DbConnection dbConnection, string tableName)
         {
             string sqlColumns = "";
+            string convertedColumnName;
 
             DataTable dataTable = dbConnection.GetSchema("COLUMNS", new string[] { null, null, tableName, null });
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
-                sqlColumns += GetSQLColumn(dataRow, tableName);
+                convertedColumnName = convertName.Column(tableName, dataRow["COLUMN_NAME"].ToString());
+                sqlColumns += GetSQLColumn(convertedColumnName, dataRow);
             }
 
             sqlColumns = sqlColumns.Remove(sqlColumns.Length - 1);
@@ -29,9 +32,9 @@ namespace DatabaseMigrator.Database
             return string.Format("({0})", sqlColumns);
         }
 
-        private string GetSQLColumn(DataRow dataRow, string tableName)
+        private string GetSQLColumn(string convertedColumnName, DataRow dataRow)
         {
-            return string.Format("{0} {1} {2},", convertName.Column(tableName, dataRow["COLUMN_NAME"].ToString()), GetColumnType(dataRow), GetNullable(dataRow));
+            return string.Format("{0} {1} {2},", convertedColumnName, GetColumnType(dataRow), GetNullable(dataRow));
         }
 
         private string GetNullable(DataRow dataRow)
@@ -143,9 +146,39 @@ namespace DatabaseMigrator.Database
             return 0;
         }
 
-        public string GetSQLSelectColumnsInView(string viewSelect)
+        public string GetSQLSelectColumnsInView(string viewSelect, string viewName)
         {
+            List<string> split = new List<string>();
+            split.AddRange(GetCharacterSplitList(viewSelect, "\r\n"));
+            split.AddRange(GetCharacterSplitList(viewSelect, " "));
+            split.AddRange(GetCharacterSplitList(viewSelect, ","));
+            split.AddRange(GetCharacterSplitList(viewSelect, "("));
+            split.AddRange(GetCharacterSplitList(viewSelect, ")"));
+            split.AddRange(GetCharacterSplitList(viewSelect, "="));
+            split.AddRange(GetCharacterSplitList(viewSelect, "<"));
+            split.AddRange(GetCharacterSplitList(viewSelect, ">"));
+            split.AddRange(GetCharacterSplitList(viewSelect, ";"));
+
+            string[] arrayViewSelect = viewSelect.Split(split.ToArray(), StringSplitOptions.RemoveEmptyEntries);
+            foreach (string item in arrayViewSelect)
+            {
+                if (item.Length > 30)
+                {
+                    
+                }
+            }
+
             return viewSelect;
+        }
+
+        private List<string> GetCharacterSplitList(string text, string character)
+        {
+            List<string> split = new List<string>();
+            if (text.Contains(character))
+            {
+                split.Add(character);
+            }
+            return split;
         }
     }
 }

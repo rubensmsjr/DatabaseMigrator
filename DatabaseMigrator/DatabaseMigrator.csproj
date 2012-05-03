@@ -50,7 +50,11 @@
   <ItemGroup>
     <Compile Include="Config\CreateConfig.cs" />
     <Compile Include="Config\ICreateConfig.cs" />
-    <Compile Include="ConvertName.cs" />
+    <Compile Include="Convert\ColumnName.cs" />
+    <Compile Include="Convert\ConvertName.cs" />
+    <Compile Include="Convert\IColumnName.cs" />
+    <Compile Include="Convert\ITableName.cs" />
+    <Compile Include="Convert\TableName.cs" />
     <Compile Include="Database\ColumnMigrator.cs" />
     <Compile Include="Database\DBConnection.cs" />
     <Compile Include="Database\DBMigration.cs" />
@@ -61,7 +65,7 @@
     <Compile Include="Database\IViewMigration.cs" />
     <Compile Include="Database\TableMigration.cs" />
     <Compile Include="Database\ViewMigration.cs" />
-    <Compile Include="IConvertName.cs" />
+    <Compile Include="Convert\IConvertName.cs" />
     <Compile Include="IMigrator.cs" />
     <Compile Include="Logger\ILogger.cs" />
     <Compile Include="Logger\Log4NetLogger.cs" />

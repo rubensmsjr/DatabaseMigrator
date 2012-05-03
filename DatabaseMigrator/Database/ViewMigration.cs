@@ -29,8 +29,7 @@ namespace DatabaseMigrator.Database
                 throw new DataException(ResourceManager.GetMessage("ConnectNotInitialized"));
             }
 
-            DataTable dataTable = (DBConnectionSource.Connection).GetSchema("VIEWS");
-
+            DataTable dataTable = DBConnectionSource.Connection.GetSchema("VIEWS");
             foreach (DataRow dataRow in dataTable.Rows)
             {
                 string viewName = dataRow["TABLE_NAME"].ToString();
@@ -62,18 +61,18 @@ namespace DatabaseMigrator.Database
             return true;
         }
 
-        private void DeleteView(string viewName)
+        private void DeleteView(string viewNameConvert)
         {
             try
             {
                 DbCommand dbCommand = DBConnectionTarget.Connection.CreateCommand();
                 dbCommand.CommandType = CommandType.Text;
-                dbCommand.CommandText = string.Format("DROP VIEW {0}", viewName);
+                dbCommand.CommandText = string.Format("DROP VIEW {0}", viewNameConvert);
                 dbCommand.ExecuteNonQuery();
             }
             catch (Exception ex)
             {
-                this.logger.Error(string.Format(ResourceManager.GetMessage("LogDeleteView") + " | {1}", viewName, ex.Message));
+                this.logger.Error(string.Format(ResourceManager.GetMessage("LogDeleteView") + " | {1}", viewNameConvert, ex.Message));
             }
         }
 
@@ -82,7 +81,7 @@ namespace DatabaseMigrator.Database
             try
             {
                 DbCommand dbCommand = DBConnectionTarget.Connection.CreateCommand();
-                dbCommand.CommandText = string.Format("CREATE VIEW {0} AS {1}", viewNameConvert, columnMigrator.GetSQLSelectColumnsInView(viewSelect));
+                dbCommand.CommandText = string.Format("CREATE VIEW {0} AS {1}", viewNameConvert, columnMigrator.GetSQLSelectColumnsInView(viewSelect, viewNameConvert));
                 dbCommand.CommandType = CommandType.Text;
                 dbCommand.ExecuteNonQuery();
             }

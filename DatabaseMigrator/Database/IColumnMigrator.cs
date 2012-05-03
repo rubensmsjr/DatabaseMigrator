@@ -6,6 +6,6 @@ namespace DatabaseMigrator.Database
     {
         string GetSQLCreateColumnsInTable(DbConnection dbConnection, string tableName);
 
-        string GetSQLSelectColumnsInView(string viewSelect);
+        string GetSQLSelectColumnsInView(string viewSelect, string viewName);
     }
 }

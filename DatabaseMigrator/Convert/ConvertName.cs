@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-namespace DatabaseMigrator
+using System.Collections.Generic;namespace DatabaseMigrator
 {
     public class ConvertName:IConvertName
     {

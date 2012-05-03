@@ -2,8 +2,8 @@
 {
     public interface IViewMigration
     {
-        IDBConnetion DBConnectionSource { get; set; }
-        IDBConnetion DBConnectionTarget { get; set; }
+        IDBConnection DBConnectionSource { get; set; }
+        IDBConnection DBConnectionTarget { get; set; }
 
         void Execute();
     }

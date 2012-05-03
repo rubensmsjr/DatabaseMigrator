@@ -8,8 +8,8 @@ namespace DatabaseMigrator.Database
 {
     public class TableMigration:ITableMigration
     {
-        public IDBConnetion DBConnectionSource { get; set; }
-        public IDBConnetion DBConnectionTarget { get; set; }
+        public IDBConnection DBConnectionSource { get; set; }
+        public IDBConnection DBConnectionTarget { get; set; }
 
         private IConvertName convertName;
         private IColumnMigrator columnMigrator;
@@ -29,18 +29,18 @@ namespace DatabaseMigrator.Database
                 throw new DataException(ResourceManager.GetMessage("ConnectNotInitialized"));
             }
 
-            DataTable dataTable = (DBConnectionSource.Connection).GetSchema("TABLES",new string[]{null,null,null,"TABLE"} );
+            DataTable dataTable = DBConnectionSource.Connection.GetSchema("TABLES",new string[]{null,null,null,"TABLE"} );
             
             foreach (DataRow dataRow in dataTable.Rows)
             {
                 string tableName = dataRow["TABLE_NAME"].ToString();
-                string tableNameConvert = convertName.Table(tableName);
+                string convertedTableName = convertName.Table(tableName);
 
                 logger.Info(string.Format(ResourceManager.GetMessage("MigratingTable"), tableName));
 
-                DeleteTable(tableNameConvert);
-                CreateTable(tableName, tableNameConvert);
-                InsertRows(tableName, tableNameConvert);
+                DeleteTable(convertedTableName);
+                CreateTable(tableName, convertedTableName);
+                InsertRows(tableName, convertedTableName);
 
                 logger.Info(ResourceManager.GetMessage("MigrationCompleted"));
             }
@@ -78,12 +78,12 @@ namespace DatabaseMigrator.Database
             }
         }
 
-        private void CreateTable(string tableName, string tableNameConvert)
+        private void CreateTable(string tableName, string convertedTableName)
         {
             try
             {
                 DbCommand dbCommand = DBConnectionTarget.Connection.CreateCommand();
-                dbCommand.CommandText = string.Format("CREATE TABLE {0} {1}", tableNameConvert, columnMigrator.GetSQLCreateColumnsInTable(DBConnectionSource.Connection, tableName));
+                dbCommand.CommandText = string.Format("CREATE TABLE {0} {1}", convertedTableName, columnMigrator.GetSQLCreateColumnsInTable(DBConnectionSource.Connection, tableName));
                 dbCommand.CommandType = CommandType.Text;
                 dbCommand.ExecuteNonQuery();
             }
@@ -93,11 +93,11 @@ namespace DatabaseMigrator.Database
             }
         }
 
-        private void InsertRows(string tableName, string tableNameConvert)
+        private void InsertRows(string tableName, string convertedTableName)
         {
             try
             {
-                PutRowsTargetDatabase(tableNameConvert,GetRowsSouceDatabase(tableName));
+                PutRowsTargetDatabase(tableName, convertedTableName, GetRowsSouceDatabase(tableName));
             }
             catch (Exception ex)
             {
@@ -120,16 +120,16 @@ namespace DatabaseMigrator.Database
             return dataSet;
         }
 
-        private void PutRowsTargetDatabase(string tableNameConvert, DataSet dataSet)
+        private void PutRowsTargetDatabase(string tableName, string convertedTableName, DataSet dataSet)
         {
             foreach (DataColumn dataColumn in dataSet.Tables[0].Columns)
-                dataColumn.ColumnName = convertName.Column(tableNameConvert, dataColumn.ColumnName);
+                dataColumn.ColumnName = convertName.Column(tableName, dataColumn.ColumnName);
 
             foreach (DataRow dataRow in dataSet.Tables[0].Rows)
                 dataRow.SetAdded();
 
             DbCommand dbCommand = DBConnectionTarget.Connection.CreateCommand();
-            dbCommand.CommandText = string.Format("SELECT * FROM {0}", tableNameConvert);
+            dbCommand.CommandText = string.Format("SELECT * FROM {0}", convertedTableName);
             dbCommand.CommandType = CommandType.Text;
 
             DbDataAdapter dbDataAdapter = DBConnectionTarget.ProviderFactory.CreateDataAdapter();

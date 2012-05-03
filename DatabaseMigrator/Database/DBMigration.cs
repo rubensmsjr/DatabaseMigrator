@@ -13,10 +13,10 @@ namespace DatabaseMigrator.Database
 
        public void InitializeConnection(DBConfig dbConfigSource, DBConfig dbConfigTarget)
        {
-           IDBConnetion DBConnectionSource = new DBConnection();
+           IDBConnection DBConnectionSource = new DBConnection();
            DBConnectionSource.Initialize(dbConfigSource);
 
-           IDBConnetion DBConnectionTarget = new DBConnection();
+           IDBConnection DBConnectionTarget = new DBConnection();
            DBConnectionTarget.Initialize(dbConfigTarget);
 
            this.TableMigration.DBConnectionSource = DBConnectionSource;

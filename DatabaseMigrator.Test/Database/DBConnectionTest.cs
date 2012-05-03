@@ -10,7 +10,7 @@ namespace DatabaseMigrator.Test.Database
     [TestClass, DeploymentItem("DatabaseSource.mdb")]
     public class DBConnectionTest
     {
-        private DBConnection dbConnection;
+        private IDBConnection dbConnection;
 
         [TestInitialize]
         public void InitializeCreateConfigTest()

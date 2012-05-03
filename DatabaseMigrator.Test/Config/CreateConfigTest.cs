@@ -2,6 +2,8 @@
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DatabaseMigrator.Config;
+using System.Globalization;
+using System.Threading;
 
 namespace DatabaseMigrator.Test.Config
 {
@@ -14,6 +16,7 @@ namespace DatabaseMigrator.Test.Config
         [TestInitialize]
         public void InitializeCreateConfigTest()
         {
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US", true);
             dbConfig = new DBConfig("System.Data.OleDb", "Provider=Microsoft.JET.OLEDB.4.0;data source=DatabaseMigrator.mdb");            
             createConfig = new CreateConfig();
         }

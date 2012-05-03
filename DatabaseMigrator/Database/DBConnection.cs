@@ -5,7 +5,7 @@ using DatabaseMigrator.Resources;
 
 namespace DatabaseMigrator.Database
 {
-    public class DBConnection:IDBConnetion
+    public class DBConnection:IDBConnection
     {
         public DbConnection Connection { get; set; }
         public DbProviderFactory ProviderFactory { get; set; }

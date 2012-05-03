@@ -12,7 +12,7 @@ namespace DatabaseMigrator.Test.Database
         public void TestGetSQLCreateColumnsInTable()
         {
             DBConfig dbConfigSource = new DBConfig("System.Data.OleDb", String.Format(@"Provider=Microsoft.JET.OLEDB.4.0;data source={0}\DatabaseSource.mdb", AppDomain.CurrentDomain.BaseDirectory));
-            DBConnection dbConnectionSource = new DBConnection();
+            IDBConnection dbConnectionSource = new DBConnection();
             dbConnectionSource.Initialize(dbConfigSource);
 
             ColumnMigrator columnMigrator = new ColumnMigrator(new ConvertName());

@@ -121,7 +121,7 @@
     <value>Conexões com banco de dados não iniciadas.</value>
   </data>
   <data name="FailedOpenDatabase" xml:space="preserve">
-    <value>Falha ao abrir banco de dados.</value>
+    <value>Falha ao abrir banco de dados: {0} | {1}.</value>
   </data>
   <data name="LogCreateTable" xml:space="preserve">
     <value>Não foi possivel criar tabela {0}.</value>

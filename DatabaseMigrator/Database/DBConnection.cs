@@ -2,6 +2,7 @@
 using System.Data.Common;
 using DatabaseMigrator.Config;
 using DatabaseMigrator.Resources;
+using System;
 
 namespace DatabaseMigrator.Database
 {
@@ -26,9 +27,9 @@ namespace DatabaseMigrator.Database
                 Connection.ConnectionString = dbConfig.ConnectionString;
                 Connection.Open();
             }
-            catch
+            catch (Exception ex)
             {
-                throw new DataException(ResourceManager.GetMessage("FailedOpenDatabase"));
+                throw new DataException(string.Format(ResourceManager.GetMessage("FailedOpenDatabase"),dbConfig.ConnectionString, ex.Message));
             }
 
             IsInitialized = true;

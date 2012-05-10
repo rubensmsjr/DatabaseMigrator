@@ -121,7 +121,7 @@
     <value>Connections are not initialized.</value>
   </data>
   <data name="FailedOpenDatabase" xml:space="preserve">
-    <value>Failed to open database.</value>
+    <value>Failed to open database: {0} | {1}.</value>
   </data>
   <data name="LogCreateTable" xml:space="preserve">
     <value>Was not possible to create table {0}.</value>

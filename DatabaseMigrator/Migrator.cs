@@ -1,6 +1,7 @@
 ﻿using System;
 using DatabaseMigrator.Config;
 using DatabaseMigrator.Database;
+using DatabaseMigrator.Logger;
 
 namespace DatabaseMigrator
 {
@@ -8,11 +9,13 @@ namespace DatabaseMigrator
     {
         private ICreateConfig createConfig;
         private IDBMigration databaseMigration;
+        private ILogger logger;
 
-        public Migrator(ICreateConfig createConfig, IDBMigration databaseMigration)
+        public Migrator(ILogger logger, ICreateConfig createConfig, IDBMigration databaseMigration)
         {
             this.createConfig = createConfig;
             this.databaseMigration = databaseMigration;
+            this.logger = logger;
         }
 
         public void Execute()
@@ -27,8 +30,15 @@ namespace DatabaseMigrator
 
         public void Execute(DBConfig dbConfigSource, DBConfig dbConfigTarget)
         {
-            databaseMigration.InitializeConnection(dbConfigSource, dbConfigTarget);
-            databaseMigration.TableMigration.Execute();
+            try
+            {
+                databaseMigration.InitializeConnection(dbConfigSource, dbConfigTarget);
+                databaseMigration.TableMigration.Execute();
+            }
+            catch(Exception ex)
+            {
+                logger.Error(ex.Message);
+            }
         }
     }
 }

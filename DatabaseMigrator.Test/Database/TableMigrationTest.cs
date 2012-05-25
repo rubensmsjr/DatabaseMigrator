@@ -31,17 +31,17 @@ namespace DatabaseMigrator.Test.Database
             convertName = new ConvertName();
             columnMigrator = new ColumnMigrator(convertName);
             logger = new Log4NetLogger();
-        }
 
-        [TestMethod]
-        public void TestExecuteTableMigration()
-        {
             TableMigration tableMigration = new TableMigration(convertName, columnMigrator, logger);
             tableMigration.DBConnectionSource = dbConnectionSource;
             tableMigration.DBConnectionTarget = dbConnectionTarget;
 
             tableMigration.Execute();
+        }
 
+        [TestMethod]
+        public void TestExecuteTableMigration()
+        {
             DbCommand dbCommandSource = dbConnectionTarget.Connection.CreateCommand();
             dbCommandSource.CommandText = "SELECT * FROM TABLE1_TEST";
             dbCommandSource.CommandType = CommandType.Text;
@@ -51,12 +51,6 @@ namespace DatabaseMigrator.Test.Database
         [TestMethod]
         public void TestExecuteTableMigrationConvert()
         {
-            TableMigration tableMigration = new TableMigration(convertName, columnMigrator, logger);
-            tableMigration.DBConnectionSource = dbConnectionSource;
-            tableMigration.DBConnectionTarget = dbConnectionTarget;
-
-            tableMigration.Execute();
-
             DbCommand dbCommandSource = dbConnectionTarget.Connection.CreateCommand();
             dbCommandSource.CommandText = "SELECT * FROM TABLE4_TEST_CONVERT_TABLE_NAME";
             dbCommandSource.CommandType = CommandType.Text;

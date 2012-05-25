@@ -77,7 +77,7 @@ namespace DatabaseMigrator.Database
                     return "NUMERIC";
 
                 case 7:
-                    return "TIMESTAMP";
+                    return "DATE";
 
                 case 11:
                     return "CHAR(1)";

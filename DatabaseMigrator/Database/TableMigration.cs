@@ -115,7 +115,10 @@ namespace DatabaseMigrator.Database
             dbDataAdapter.SelectCommand = dbCommand;
 
             DataSet dataSet = new DataSet();
-            dbDataAdapter.Fill(dataSet);
+            dbDataAdapter.FillSchema(dataSet, SchemaType.Mapped);
+
+            DbDataReader dbDataReader = dbCommand.ExecuteReader();
+            dataSet.Tables[0].Load(dbDataReader);
 
             return dataSet;
         }

@@ -74,7 +74,7 @@ namespace DatabaseMigrator.Database
 
                 case 5:
                 case 6:
-                    return "NUMERIC";
+                    return "NUMBER";
 
                 case 7:
                     return "DATE";

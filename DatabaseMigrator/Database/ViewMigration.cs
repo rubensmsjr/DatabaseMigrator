@@ -57,7 +57,6 @@ namespace DatabaseMigrator.Database
             {
                 return false;
             }
-
             return true;
         }
 

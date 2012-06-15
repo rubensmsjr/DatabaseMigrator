@@ -151,27 +151,25 @@ namespace DatabaseMigrator.Database
             string[] arrayViewSelect = GetArrayViewSelect(viewSelect);
             List<string> listTableName = GetListTableNameInSelectView(dbConnection, arrayViewSelect);
 
+            foreach (string tableName in listTableName)
+            {
+                if (tableName.Length > 30)
+                    viewSelect = viewSelect.Replace(tableName, convertName.Table(tableName));
+            }
+
             foreach (string item in arrayViewSelect)
             {
                 if (item.Length > 30)
                 {
-                    
+                    string tableName = GetTableNameThisColumns(dbConnection, listTableName, item);
+                    if (tableName != null)
+                    {
+                        viewSelect = viewSelect.Replace(item, convertName.Column(tableName, item));
+                    }
                 }
             }
 
             return viewSelect;
-        }
-
-        private List<string> GetListTableNameInSelectView(DbConnection dbConnection, string[] arrayViewSelect)
-        {
-            List<string> listTableName = new List<string>();
-            DataTable dataTable = dbConnection.GetSchema("TABLES", new string[] { null, null, null, "TABLE" });
-
-            foreach (DataRow dataRow in dataTable.Rows)
-            {
-                listTableName.Add(dataRow["TABLE_NAME"].ToString());
-            }
-            return listTableName;
         }
 
         private string[] GetArrayViewSelect(string viewSelect)
@@ -186,6 +184,7 @@ namespace DatabaseMigrator.Database
             split.AddRange(GetCharacterSplitList(viewSelect, "<"));
             split.AddRange(GetCharacterSplitList(viewSelect, ">"));
             split.AddRange(GetCharacterSplitList(viewSelect, ";"));
+            split.AddRange(GetCharacterSplitList(viewSelect, "."));
 
             return viewSelect.Split(split.ToArray(), StringSplitOptions.RemoveEmptyEntries);
         }
@@ -198,6 +197,42 @@ namespace DatabaseMigrator.Database
                 split.Add(character);
             }
             return split;
+        }
+
+        private List<string> GetListTableNameInSelectView(DbConnection dbConnection, string[] arrayViewSelect)
+        {
+            List<string> listTableName = new List<string>();
+            DataTable dataTable = dbConnection.GetSchema("TABLES", new string[] { null, null, null, "TABLE" });
+
+            foreach (DataRow dataRow in dataTable.Rows)
+            {
+                foreach (string tableNameInSelect in arrayViewSelect)
+                {
+                    if (dataRow["TABLE_NAME"].ToString() == tableNameInSelect)
+                    {
+                        listTableName.Add(dataRow["TABLE_NAME"].ToString());
+                    }
+                }
+            }
+            return listTableName;
+        }
+
+        private string GetTableNameThisColumns(DbConnection dbConnection, List<string> listTableName, string item)
+        {
+            foreach (string tableName in listTableName)
+            {
+                DataTable dataTable = dbConnection.GetSchema("COLUMNS", new string[] { null, null, tableName, null });
+
+                foreach (DataRow dataRow in dataTable.Rows)
+                {
+                    if (item == dataRow["COLUMN_NAME"].ToString())
+                    {
+                        return tableName;
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }
